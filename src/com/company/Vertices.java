@@ -11,6 +11,8 @@ public class Vertices {
     private ArrayList <Coordinates> gridPoints = new ArrayList<Coordinates>();
     private int scanSize;
     public Vertices(BufferedImage image, double startingX, double endingX, double startingY, double endingY, int grid, int partials, int lineWidth, MaxAllowance max) {
+        // purpose of this class: to create an ArrayList of all the grid points on a crease pattern, and check each of those points for intersections.
+        // all intersections found will be returned and checked for lines by the LineDetector class
         this.coordinates = coordinates;
         this.image = image;
         this.max = max;
@@ -80,21 +82,23 @@ public class Vertices {
 //            Util.makeBlack(image, gridPoints.get(i).getX(),gridPoints.get(i).getY(), scanSize);
 //        }
     }
+    // finds all types of intersections at once, but the downside is that you can't make adjustments if a certain type of intersection is found too much/too little
+    // so I only this version when doing hardcoded testing where I already have the correct max values
     public ArrayList<Coordinates> findIntersections(int cornerMax, int edgeMax, int centerMax){
         // finding the intersections
         ArrayList <Coordinates> intersections = new ArrayList<Coordinates>();
         System.out.println("edge max: " + edgeMax + " center max: " + centerMax + "corner max: " + cornerMax);  // test print statement
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < 4; i++){ // checks the corner points, which are the first 4 points on the array
             if(Util.totalRGB(image, gridPoints.get(i).getX(), gridPoints.get(i).getY(), scanSize) <= cornerMax){
                 intersections.add(gridPoints.get(i));
             }
         }
-        for(int i = 4; i < gridPoints.size(); i++){     // checking for intersections on the grid points
+        for(int i = 4; i < gridPoints.size(); i++){     // checking for intersections on the corner and edge grid points
             if(gridPoints.get(i).onEdge()){
-                if(Util.totalRGB(image, gridPoints.get(i).getX(), gridPoints.get(i).getY(), scanSize) <= edgeMax){   // normally is edgeMax
+                if(Util.totalRGB(image, gridPoints.get(i).getX(), gridPoints.get(i).getY(), scanSize) <= edgeMax){   // if the total rgb value is less than an adjustable max, it is counted as an intersection.
                     intersections.add(gridPoints.get(i));
                 }
-            } else if(Util.totalRGB(image, gridPoints.get(i).getX(), gridPoints.get(i).getY(), scanSize) <= centerMax){   // normally is centerMax
+            } else if(Util.totalRGB(image, gridPoints.get(i).getX(), gridPoints.get(i).getY(), scanSize) <= centerMax){
                 intersections.add(gridPoints.get(i));
             }
         }
@@ -104,6 +108,7 @@ public class Vertices {
         }
         return intersections;
     }
+    // calibrates the max value for just the edge points
     public ArrayList<Coordinates> findEdges(){
         ArrayList <Coordinates> intersections = new ArrayList<Coordinates>();
         int edgeMax = max.getEdgeAllowance();
@@ -112,7 +117,7 @@ public class Vertices {
         System.out.println("edge max: " + edgeMax + " center max: " + centerMax + "corner max: " + cornerMax);  // test print statement
         for(int i = 4; i < gridPoints.size(); i++) {     // checking for intersections on the grid points
             if (gridPoints.get(i).onEdge()) {
-                if (Util.totalRGB(image, gridPoints.get(i).getX(), gridPoints.get(i).getY(), scanSize) <= edgeMax) {   // normally is edgeMax
+                if (Util.totalRGB(image, gridPoints.get(i).getX(), gridPoints.get(i).getY(), scanSize) <= edgeMax) {
                     intersections.add(gridPoints.get(i));
                 }
             }
@@ -123,6 +128,7 @@ public class Vertices {
         }
         return intersections;
     }
+    // calibrates the max value for just the corner points
     public ArrayList<Coordinates> findCorners(){
         // finding the intersections
         ArrayList <Coordinates> intersections = new ArrayList<Coordinates>();
@@ -143,6 +149,7 @@ public class Vertices {
         System.out.println("corners found: " + intersections.size());
         return intersections;
     }
+    // calibrates the max value for just the center points
     public ArrayList<Coordinates> findCenters(){
         // finding the intersections
         ArrayList <Coordinates> intersections = new ArrayList<Coordinates>();
@@ -156,9 +163,6 @@ public class Vertices {
             if (gridPoints.get(i).inCenter()) {
                 if (Util.totalRGB(image, gridPoints.get(i).getX(), gridPoints.get(i).getY(), scanSize) <= centerMax) {
                     pointsFound++;
-                    if(Util.totalRGB(image, gridPoints.get(i).getX(), gridPoints.get(i).getY(), scanSize) == 0){
-                        System.out.println("********** ZERO POINT DETECTED **********");
-                    }
 //                    System.out.println("Point added. Total RGB: " + Util.totalRGB(image, gridPoints.get(i).getX(), gridPoints.get(i).getY(), scanSize) + " center max: " + centerMax);
                     intersections.add(gridPoints.get(i));
                 }
@@ -171,6 +175,7 @@ public class Vertices {
         }
         return intersections;
     }
+    // tester to make sure center corner and edge points have been correctly organized
     public void centerCornerOrEdge(){
         for(int i = 0; i < gridPoints.size(); i++){
             if(gridPoints.get(i).onCorner()){
@@ -182,20 +187,23 @@ public class Vertices {
             }
         }
     }
+    // tester to show the areas that are being scanned for intersections
     public void showGrid(){
         for (int i = 0; i < gridPoints.size(); i++) {
             Util.makeBlack(image, gridPoints.get(i).getX(), gridPoints.get(i).getY(), scanSize);
         }
     }
+    // shows the exact pixel that is in the center of the area scannned
     public void showGridPixel(){
         for(int i = 0; i < gridPoints.size(); i++){
             Util.makeGreen(image, gridPoints.get(i).getX(), gridPoints.get(i).getY());
         }
     }
+    // returns image so that maxAdjuster can return the image to main where it is passed into lineDetector
     public BufferedImage getImage(){
         return image;
     }
-
+    // returns the arraylist of all grid points for testing
     public ArrayList getArray(){
         return coordinates;
     }

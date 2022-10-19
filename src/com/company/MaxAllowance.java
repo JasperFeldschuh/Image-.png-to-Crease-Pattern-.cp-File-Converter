@@ -7,6 +7,9 @@ public class MaxAllowance {
     private int scanLength;
     private int scanArea;
     public MaxAllowance(int lineWidth, int change){
+        // purpose of this class: to set the maximum allowances for a single pixel.
+        // This number is then multiplied by the number of pixels scanned at each point to get the real max allowance values.
+        // these numbers are adjusted to find the value that finds only line intersections
         this.scanLength = (int)(lineWidth * 1.5 + 0.5);
         this.scanArea = scanLength * scanLength;
         if(lineWidth == 1){

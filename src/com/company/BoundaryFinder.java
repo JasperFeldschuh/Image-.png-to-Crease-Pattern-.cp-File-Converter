@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BoundaryFinder {
-    Scanner scan = new Scanner(System.in);
+    // purpose of this class: to find the boundaries of the crease pattern.
+    // this is done by traversing from the center of the image out until a black pixel is found, and then subtracting/adding half of the line width to get the exact center pixel
+    // it is very important to get the exact boundary, because this is what all of the grid points are based off of, and if they are off, the program will struggle to detect the lines
+
     private String location;
     // information for grid snapping
     private int grid;
@@ -43,7 +46,7 @@ public class BoundaryFinder {
         } catch (IOException e) {
             System.out.println(e);
         }
-        try {
+        try { // making the copy that is marked up in the process of finding the points
             f = new File(location);
             original = ImageIO.read(f);
         } catch (IOException e) {
@@ -56,7 +59,7 @@ public class BoundaryFinder {
             midX += 2 * lineWidth;
             midY += 2 * lineWidth;
         }
-        double realLineWidth  = lineWidth + 1;
+        double realLineWidth  = lineWidth + 1; // this is so that when you divide the line width by two and add or subtract that value, it brings you to the exact right point
         // determining starting y pixel
         int counter = midY + 1; // set to negative one so that it will become zero when incremented in the beginning
         while (!black) {

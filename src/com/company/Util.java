@@ -4,10 +4,11 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileOutputStream;
-import java.nio.Buffer;
 import java.util.Scanner;
-import java.util.ArrayList;
+
 public class Util {
+    // purpose of class: to store helper methods that can be used for testing and in multiple other classes to prevent code repetition and make debugging easier
+    // most of this stuff (even it if it is not grayed out) is only used for debugging some of it could probably be refactored into other classes
     public static int[] getRGB(BufferedImage image, int x, int y){
         int pixel = image.getRGB(x, y);
         int red = (pixel >> 16) & 0xff;
@@ -108,6 +109,7 @@ public class Util {
         int totalPixels = (offset * 2) * (offset * 2);  // total number of pixels. We can't just square the scan size because of potential rounding discrepencies
         for(int i = y - offset; i < y + offset; i++){
             for(int j = x - offset; j < x + offset; j++){
+//                System.out.println("x = " + j + " y = " + i);
                 int pixel = image.getRGB(j, i);
                 int red = (pixel >> 16) & 0xff;
                 int green = (pixel >> 8) & 0xff;
@@ -359,12 +361,13 @@ public class Util {
     public static int divideRound(int dividend, int divisor){
         return((int)(1.0 * dividend / divisor + 0.5));
     }
-    // returns the slope between two points
-    public static double[] getSlope(Coordinates c1, Coordinates c2){
+    // returns the slope, y intercept, and run between two points
+    public static double[] getEquation(Coordinates c1, Coordinates c2){
         double run = c2.getX() - c1.getX();
         double rise = c2.getY() - c1.getY();
+        double yIntercept = 0;
 //        System.out.println("rise " + rise + " run " + run);
-        Double slope = 0.0; // pointless line so compiler stops being a bitch
+        Double slope = 0.0; // pointless line for the compiler
 
         if(run == 0 && rise < 0){
 //            System.out.println("slope set to minimum value");
@@ -372,18 +375,30 @@ public class Util {
         } else if(run == 0 && rise > 0){
 //            System.out.println("slope set to maximum value");
             slope = Double.MAX_VALUE; // if the slope is undefined and the starting values are smaller than the ending values
-        }
-        double yIntercept = 0;
-        if(run != 0){ // if the run is zero, the equation is undefined, so calculating the slope will throw an error
+        } else{ // if the run is zero, the equation is undefined, so calculating the slope will throw an error
             slope = rise / run;  // we can now safely calculate the slope since we know the run is not zero
             yIntercept = c1.getY() - slope * c1.getX();
         }
         double[] equation =  {slope, yIntercept, run};
         return equation;
         }
-
+    // returns just the slope
+    public static double getSlope(double y2, double y1, double x2, double x1){
+        double run = x2 - x1;
+        double rise = y2 - y1;
+//        System.out.println("rise " + rise + " run " + run);
+        if(run == 0 && rise < 0){
+//            System.out.println("slope set to minimum value");
+             return Double.MIN_VALUE; // if the slope is undefined and the starting values are larger than the ending values
+        } else if(run == 0 && rise > 0){
+//            System.out.println("slope set to maximum value");
+             return Double.MAX_VALUE; // if the slope is undefined and the starting values are smaller than the ending values
+        } else{ // if the run is zero, the equation is undefined, so calculating the slope will throw an error
+            return rise / run;  // we can now safely calculate the slope since we know the run is not zero
+        }
+    }
     public static void drawLine(BufferedImage image, Coordinates c1, Coordinates c2){
-        double equation[] = getSlope(c1, c2); // getting the equation
+        double equation[] = getEquation(c1, c2); // getting the equation
         // getting the x and y starts and ends
         int xStart = c1.getX();
         int xEnd = c2.getX();
@@ -420,7 +435,7 @@ public class Util {
     }
     // returns the average rgb value, number of a collection of points along line
     public static int[] lineData(BufferedImage image, Coordinates c1, Coordinates c2, int scanSize){
-        double equation[] = getSlope(c1, c2); // getting the equation
+        double equation[] = getEquation(c1, c2); // getting the equation
         // getting the x and y starts and ends
         int xStart = c1.getX();
         int xEnd = c2.getX();

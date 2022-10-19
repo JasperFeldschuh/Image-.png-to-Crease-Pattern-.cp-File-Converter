@@ -23,6 +23,10 @@ public class MaxAdjuster {
     private BufferedImage original;
     private ArrayList<Coordinates> finalPoints = new ArrayList<Coordinates>();
     public MaxAdjuster(String location, String newLocation, int grid, int partials, int width) { // non hardcoded version
+        // purpose if this class: to calibrate the max allowances to find all of the intersecting lines
+        // this class calls the BoundaryFinder and Vertices classes to find the boundaries of the crease pattern and find the intersections
+        // if the wrong number of intersections are found, the max allowance values are calibrated with user input until they are correct
+        // this process is carried out individually for
         System.out.println("Max adjuster non hardcoded entered");
         // initializing the private variables so that I can use them in the static methods
         this.location = location;
@@ -47,7 +51,7 @@ public class MaxAdjuster {
         ArrayList<Coordinates> unedited = finalPoints; // unedited copy to mark the original location of the points
         Util.editImage(original, newLocation); // marking the points to the image file
     }
-    // hardcoded version for testing
+    // hardcoded version for testing (called from main and skips the tedious maxAllowance calibration process)
     public MaxAdjuster(String location, String newLocation, int grid, int partials, int width, int cornerMax, int edgeMax, int centerMax) {
         System.out.println("max adjuster entered");
         // initializing the private variables so that I can use them in the static methods
@@ -69,16 +73,6 @@ public class MaxAdjuster {
         MaxAllowance max = new MaxAllowance(6, 256); // this line is just so the constructor is satisfied but max is never used
         points = new Vertices(image, xStart, xEnd, yStart, yEnd, grid, partials, width, max);
         finalPoints = points.findIntersections(cornerMax, edgeMax, centerMax);
-
-
-//        System.out.println("About to enter for loop");
-//        for(int i = 0; i < finalPoints.size(); i++){
-//            System.out.println("for loop entered");
-//            System.out.println("Old x: " + finalPoints.get(i).getX() + " Old y: " + finalPoints.get(i).getY());
-//            int coordinates[] = calibratePoints(finalPoints.get(i));
-//            finalPoints.get(i).setX(coordinates[0]);
-//            finalPoints.get(i).setY(coordinates[1]);
-//        }
     }
     // adjusts the corner sensitivity
     private ArrayList<Coordinates> adjustCorners(ArrayList<Coordinates> finalPoints){

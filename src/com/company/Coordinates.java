@@ -11,6 +11,7 @@ public class Coordinates {
     private double cpYStart = -200.0;
 
     public Coordinates(int x, int y, boolean onEdge, boolean onCorner, double cpX, double cpY){
+        // point of this class: to store the coordinate values of the BufferedImage and the corresponding x and y values for the .CP file. Also used to store the point type (corner, edge, or center)
         this.x = x;
         this.y = y;
         this.onEdge = onEdge;
@@ -70,7 +71,7 @@ public class Coordinates {
     public void makeEdge(){
         onEdge = true;
     }
-    // returns string representation of the x and y coordinates
+    // returns string representation of the x and y coordinates. only used for testing
     public String toString(){
         return("y coordinate: " + y + " x coordinate: " + x);
     }
