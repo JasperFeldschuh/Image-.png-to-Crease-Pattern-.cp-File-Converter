@@ -4,7 +4,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.io.File;
+import java.util.Scanner;
 public class LineDetector {
+    Scanner scan = new Scanner(System.in);
     private BufferedImage image;
     private String cpString = ""; // string to hold the numerical values for the .cp file format: line type (1 = edge, 2 = mountain, 3 = valley) , starting coordinates, ending coordinates
     private ArrayList<Coordinates> points;
@@ -110,7 +112,11 @@ public class LineDetector {
 
             try {
                 //Specify the file path here
-                file = new File("/Users/jasperfeldschuh 1/OneDrive/Jasper Crease Patterns/Test cps for program/first cp from program.cp");
+                String path = "/Users/jasperfeldschuh 1/OneDrive/Jasper Crease Patterns/Test cps for program/";
+                System.out.println("Create a name for the file");
+                String name = scan.nextLine();
+                String location = path + name;
+                file = new File(location);
                 fos = new FileOutputStream(file);
 
                 /* This logic will check whether the file
