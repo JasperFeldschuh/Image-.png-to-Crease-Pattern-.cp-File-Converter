@@ -115,7 +115,7 @@ public class LineDetector {
                 String path = "/Users/jasperfeldschuh 1/OneDrive/Jasper Crease Patterns/Test cps for program/";
                 System.out.println("Create a name for the file");
                 String name = scan.nextLine();
-                String location = path + name;
+                String location = path + name + ".cp";
                 file = new File(location);
                 fos = new FileOutputStream(file);
 
