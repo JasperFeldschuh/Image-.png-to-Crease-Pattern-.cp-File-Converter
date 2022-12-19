@@ -11,7 +11,7 @@ converted images of simple box pleated crease patterns to .cp files.
 
 ##  Instructions For Use:
 **To run the program, you must first edit the string variable path (line 43) to the appropiate file path on your computer. You also need to change the path
-on line 122 in the same way so that the .cp can file generated in a folder on you computer.**   
+on line 122 in the same way so that the .cp file can be generated in a folder on you computer.**   
 
 From there, the program will ask
 for the name of the file, the gridsize, if there are partials, and the line thickness (this can be determined by zooming in on an image to the pixel level).
