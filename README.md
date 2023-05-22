@@ -1,5 +1,5 @@
 # Image-.png-to-Crease-Pattern-.cp-File-Converter
-**General Use Cases:**  
+##  General Use Cases:  
 Crease patterns are the most common and readilly available way to share the information required to fold other people's designs. Video tutorials and diagrams 
 are often not available or locked behind a paywall, but the crease pattern of a model is almost always available for free. Another advantage
 of crease patterns is that they reveal the underlyinig structures that went into creating the design. One of the best ways to improve as a designer is to modify
